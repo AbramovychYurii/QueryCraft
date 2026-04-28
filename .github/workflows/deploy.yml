@@ -1,0 +1,67 @@
+name: Deploy to Chrome Web Store
+
+on:
+  pull_request:
+    branches:
+      - release
+    types: [closed]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: release
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build extension
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          if [ ! -f "dist/manifest.json" ]; then
+            echo "❌ manifest.json not found in dist/"
+            exit 1
+          fi
+          echo "✅ Build output verified"
+          echo "Version: $(jq -r .version dist/manifest.json)"
+
+      - name: Create ZIP
+        run: |
+          cd dist
+          zip -r ../extension.zip . -x "*.DS_Store" "*.map"
+          cd ..
+          echo "ZIP size: $(du -h extension.zip | cut -f1)"
+
+      - name: Upload to Chrome Web Store
+        run: |
+          npx chrome-webstore-upload-cli@3 upload \
+            --source extension.zip \
+            --extension-id ${{ secrets.EXTENSION_ID }} \
+            --client-id ${{ secrets.CLIENT_ID }} \
+            --client-secret ${{ secrets.CLIENT_SECRET }} \
+            --refresh-token ${{ secrets.REFRESH_TOKEN }} \
+            --auto-publish
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "### ✅ Deployment successful" >> $GITHUB_STEP_SUMMARY
+          echo "Extension uploaded to Chrome Web Store and submitted for review." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **PR**: #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Title**: ${{ github.event.pull_request.title }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Author**: @${{ github.event.pull_request.user.login }}" >> $GITHUB_STEP_SUMMARY
