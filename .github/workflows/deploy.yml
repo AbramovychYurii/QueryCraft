@@ -6,6 +6,19 @@ on:
       - release
     types: [closed]
   workflow_dispatch:
+    inputs:
+      bump_type:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
 
 jobs:
   deploy:
@@ -17,12 +30,48 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: release
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
+
+      - name: Bump version in manifest
+        id: bump
+        run: |
+          BUMP_TYPE="${{ github.event.inputs.bump_type || 'patch' }}"
+          CURRENT=$(jq -r .version manifest.json)
+
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+
+          case "$BUMP_TYPE" in
+            major)
+              NEW="$((MAJOR + 1)).0.0"
+              ;;
+            minor)
+              NEW="$MAJOR.$((MINOR + 1)).0"
+              ;;
+            patch|*)
+              NEW="$MAJOR.$MINOR.$((PATCH + 1))"
+              ;;
+          esac
+
+          echo "Bumping version: $CURRENT -> $NEW (type: $BUMP_TYPE)"
+          jq ".version = \"$NEW\"" manifest.json > tmp.json && mv tmp.json manifest.json
+
+          # Expose the new version to subsequent steps
+          echo "new_version=$NEW" >> $GITHUB_OUTPUT
+
+      - name: Commit and push new version
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add manifest.json
+          git commit -m "chore: bump version to ${{ steps.bump.outputs.new_version }} [skip ci]"
+          git push origin release
 
       - name: Install dependencies
         run: npm ci
@@ -33,11 +82,11 @@ jobs:
       - name: Verify build output
         run: |
           if [ ! -f "dist/manifest.json" ]; then
-            echo "❌ manifest.json not found in dist/"
+            echo "manifest.json not found in dist/"
             exit 1
           fi
-          echo "✅ Build output verified"
-          echo "Version: $(jq -r .version dist/manifest.json)"
+          BUILD_VERSION=$(jq -r .version dist/manifest.json)
+          echo "Build verified — version: $BUILD_VERSION"
 
       - name: Create ZIP
         run: |
@@ -56,12 +105,18 @@ jobs:
             --refresh-token ${{ secrets.REFRESH_TOKEN }} \
             --auto-publish
 
+      - name: Tag release
+        run: |
+          VERSION="${{ steps.bump.outputs.new_version }}"
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
+
       - name: Summary
         if: success()
         run: |
-          echo "### ✅ Deployment successful" >> $GITHUB_STEP_SUMMARY
-          echo "Extension uploaded to Chrome Web Store and submitted for review." >> $GITHUB_STEP_SUMMARY
+          echo "### Deployment successful" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ steps.bump.outputs.new_version }}" >> $GITHUB_STEP_SUMMARY
           echo "- **PR**: #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Title**: ${{ github.event.pull_request.title }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Author**: @${{ github.event.pull_request.user.login }}" >> $GITHUB_STEP_SUMMARY
