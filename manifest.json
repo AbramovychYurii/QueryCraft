@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "QueryCraft",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Inspect, edit, save, and replay URL query parameters on the active tab.",
   "action": {
     "default_popup": "src/popup/index.html",
