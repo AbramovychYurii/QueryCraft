@@ -2,6 +2,8 @@
 
 A Chrome extension for inspecting, editing, saving, and replaying URL query parameters on the active tab. Built for developers and QA engineers.
 
+**[Install from the Chrome Web Store](https://chromewebstore.google.com/detail/querycraft/gokkgpehjnmdcnpknmkefbjnhpnnhbih)**
+
 ![QueryCraft popup](public/icons/icon128.png)
 
 ## Features
@@ -14,6 +16,10 @@ A Chrome extension for inspecting, editing, saving, and replaying URL query para
 - **Dark, light, and system themes** — all colors meet WCAG 2.2 AA contrast.
 - **Full keyboard navigation** — every interactive element is reachable via Tab, with visible focus rings and sensible shortcuts.
 - **Screen-reader friendly** — semantic HTML, ARIA live region for status announcements, role-correct toggle/switch/dialog semantics.
+
+## Planned features
+
+- **Company-specific query filter rules** — support for complex, configurable filters tailored to the needs of individual companies. The configuration delivery mechanism is still being explored (inline config, file import, or remote fetch). Currently available as a **beta** on the [`DLS-beta`](../../tree/DLS-beta) branch — build it yourself to try it out.
 
 ## Keyboard shortcuts
 
@@ -91,44 +97,43 @@ npm run lint        # ESLint with react + jsx-a11y rules
 npm run test        # Vitest (jsdom, with chrome.* mocks preconfigured)
 ```
 
-## Project structure
+## Deployment
 
-```
-querycraft/
-├── manifest.json
-├── vite.config.ts
-├── tsconfig.json
-├── src/
-│   ├── popup/                # React entry: App.tsx, main.tsx, index.html
-│   ├── background/           # Service worker (stateless)
-│   ├── components/           # One folder per component (.tsx + .module.css + index.ts)
-│   │   ├── Header/
-│   │   ├── UrlPreview/
-│   │   ├── ParamList/
-│   │   ├── ParamRow/
-│   │   ├── ParamKeyInput/
-│   │   ├── ParamValueInput/
-│   │   ├── BooleanToggle/
-│   │   ├── AddParamRow/
-│   │   ├── RemoveParamButton/
-│   │   ├── ActionBar/
-│   │   ├── Button/
-│   │   ├── IconButton/
-│   │   ├── SavedLinksDrawer/
-│   │   ├── GroupSelector/
-│   │   ├── ThemeToggle/
-│   │   ├── LiveRegion/
-│   │   ├── EmptyState/
-│   │   └── icons.tsx         # Shared inline SVGs
-│   ├── hooks/                # useActiveTabUrl, useClipboard, useTheme,
-│   │                         # useSavedLinks, useFocusTrap, useKeyboardShortcuts
-│   ├── lib/                  # Pure logic: urlParser, paramTypes, storage, tabs
-│   ├── store/                # Zustand store
-│   ├── types/                # Shared TypeScript types
-│   ├── styles/               # tokens.css (light + dark), global.css
-│   └── test/                 # Vitest setup + chrome mocks
-└── public/icons/             # 16 / 48 / 128 PNGs
-```
+Releases are automated via GitHub Actions and publish directly to the Chrome Web Store.
+
+### How it works
+
+| Trigger | What happens |
+| --- | --- |
+| PR merged into `release` branch | Automatic deploy |
+| Manual `workflow_dispatch` | Deploy with a chosen version bump |
+
+### Version bumping
+
+The workflow bumps `manifest.json` version automatically before building:
+
+| Type | Example |
+| --- | --- |
+| `patch` (default) | `1.0.0` → `1.0.1` |
+| `minor` | `1.0.0` → `1.1.0` |
+| `major` | `1.0.0` → `2.0.0` |
+
+### Required secrets
+
+The following secrets must be set in the repository settings:
+
+| Secret | Description |
+| --- | --- |
+| `EXTENSION_ID` | Chrome Web Store extension ID |
+| `CLIENT_ID` | Google OAuth client ID |
+| `CLIENT_SECRET` | Google OAuth client secret |
+| `REFRESH_TOKEN` | Google OAuth refresh token |
+
+### Release flow
+
+1. Merge your feature branch into `main`.
+2. Open a PR from `main` → `release`.
+3. Merge the PR — the workflow bumps the version, builds, zips, uploads to the store, and tags the release automatically.
 
 ## Accessibility notes
 
