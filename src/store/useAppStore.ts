@@ -42,7 +42,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   loadUrl: (url, tabId) => {
     if (!isEditableUrl(url)) {
       set({
-        tabState: { status: 'unsupported', reason: 'Browser-internal pages cannot be edited.' },
+        tabState: { status: 'unsupported', reason: 'Browser-internal pages cannot be edited.', tabId },
       });
       return;
     }

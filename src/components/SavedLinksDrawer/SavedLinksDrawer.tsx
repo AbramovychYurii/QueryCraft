@@ -117,6 +117,7 @@ export function SavedLinksDrawer({
               onLoadLink={onLoadLink}
               onDeleteLink={onDeleteLink}
               onStartSave={() => setMode('save')}
+              canSave={!!currentUrl}
             />
           )}
         </div>
@@ -200,6 +201,7 @@ interface GroupedLinksListProps {
   onLoadLink: (url: string) => void;
   onDeleteLink: (id: string) => void;
   onStartSave: () => void;
+  canSave: boolean;
 }
 
 function GroupedLinksList({
@@ -208,13 +210,28 @@ function GroupedLinksList({
   onLoadLink,
   onDeleteLink,
   onStartSave,
+  canSave,
 }: GroupedLinksListProps) {
   const totalCount = Array.from(linksByGroup.values()).reduce((sum, l) => sum + l.length, 0);
+
+  // All groups expanded by default.
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(
+    () => new Set(groups.map((g) => g.id)),
+  );
+
+  function toggleGroup(id: string) {
+    setExpandedGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
 
   return (
     <div className={styles.list}>
       <div className={styles.listTop}>
-        <Button variant="primary" size="sm" onClick={onStartSave} block>
+        <Button variant="primary" size="sm" onClick={onStartSave} block disabled={!canSave}>
           Save current URL
         </Button>
       </div>
@@ -225,36 +242,53 @@ function GroupedLinksList({
         groups.map((g) => {
           const groupLinks = linksByGroup.get(g.id) ?? [];
           if (groupLinks.length === 0) return null;
+          const isExpanded = expandedGroups.has(g.id);
           return (
             <section key={g.id} className={styles.groupSection} aria-labelledby={`g-${g.id}`}>
-              <h3 id={`g-${g.id}`} className={styles.groupHeading}>
-                {g.name}{' '}
-                <span className={styles.groupCount} aria-label={`${groupLinks.length} links`}>
-                  {groupLinks.length}
+              <button
+                type="button"
+                id={`g-${g.id}`}
+                className={styles.groupToggle}
+                onClick={() => toggleGroup(g.id)}
+                aria-expanded={isExpanded}
+              >
+                <span className={styles.groupName}>
+                  {g.name}
+                  <span className={styles.groupCount} aria-label={`${groupLinks.length} links`}>
+                    {groupLinks.length}
+                  </span>
                 </span>
-              </h3>
-              <ul className={styles.linkList} role="list">
-                {groupLinks.map((link) => (
-                  <li key={link.id} className={styles.linkRow}>
-                    <button
-                      type="button"
-                      className={styles.linkButton}
-                      onClick={() => onLoadLink(link.url)}
-                      title={link.url}
-                    >
-                      <span className={styles.linkLabel}>{link.label || link.url}</span>
-                      {link.label && <span className={styles.linkUrl}>{link.url}</span>}
-                    </button>
-                    <IconButton
-                      aria-label={`Delete ${link.label || link.url}`}
-                      icon={<IconClose />}
-                      size="sm"
-                      tone="danger"
-                      onClick={() => onDeleteLink(link.id)}
-                    />
-                  </li>
-                ))}
-              </ul>
+                <span
+                  className={`${styles.chevron} ${isExpanded ? '' : styles.chevronCollapsed}`}
+                  aria-hidden="true"
+                >
+                  <IconChevronLeft />
+                </span>
+              </button>
+              {isExpanded && (
+                <ul className={styles.linkList} role="list">
+                  {groupLinks.map((link) => (
+                    <li key={link.id} className={styles.linkRow}>
+                      <button
+                        type="button"
+                        className={styles.linkButton}
+                        onClick={() => onLoadLink(link.url)}
+                        title={link.url}
+                      >
+                        <span className={styles.linkLabel}>{link.label || link.url}</span>
+                        {link.label && <span className={styles.linkUrl}>{link.url}</span>}
+                      </button>
+                      <IconButton
+                        aria-label={`Delete ${link.label || link.url}`}
+                        icon={<IconClose />}
+                        size="sm"
+                        tone="danger"
+                        onClick={() => onDeleteLink(link.id)}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
             </section>
           );
         })
