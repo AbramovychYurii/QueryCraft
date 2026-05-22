@@ -18,3 +18,7 @@
 .previewWrap {
   padding-top: var(--space-4);
 }
+
+.bookmarkBtn {
+  border-color: var(--color-border);
+}

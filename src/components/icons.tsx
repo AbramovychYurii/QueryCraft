@@ -95,3 +95,17 @@ export const IconLogo = () => (
     <circle cx="12" cy="11.5" r="1.5" stroke="currentColor" strokeWidth="1.5" />
   </svg>
 );
+
+export const IconEdit = () => (
+  <svg {...baseProps}>
+    <path d="M11.5 2.5 L13.5 4.5 L5 13 L2 14 L3 11 Z" />
+    <path d="M10 4 L12 6" />
+  </svg>
+);
+
+export const IconSearch = () => (
+  <svg {...baseProps}>
+    <circle cx="6.5" cy="6.5" r="4" />
+    <path d="M9.5 9.5 L13.5 13.5" />
+  </svg>
+);

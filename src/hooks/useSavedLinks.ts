@@ -12,6 +12,7 @@ export function useSavedLinks(): {
   groups: Group[];
   isLoading: boolean;
   saveLink: (input: { url: string; label?: string; groupId?: string }) => Promise<SavedLink>;
+  updateLink: (id: string, label: string | undefined, groupId: string) => Promise<void>;
   deleteLink: (id: string) => Promise<void>;
   createGroup: (name: string) => Promise<Group>;
   renameGroup: (id: string, name: string) => Promise<void>;
@@ -97,5 +98,26 @@ export function useSavedLinks(): {
     [groups, links],
   );
 
-  return { links, groups, isLoading, saveLink, deleteLink, createGroup, renameGroup, deleteGroup };
+  const updateLink = useCallback(
+    async (id: string, label: string | undefined, groupId: string) => {
+      const next = links.map((l) =>
+        l.id === id ? { ...l, label: label || undefined, groupId } : l,
+      );
+      setLinks(next);
+      await storage.setSavedLinks(next);
+    },
+    [links],
+  );
+
+  return {
+    links,
+    groups,
+    isLoading,
+    saveLink,
+    updateLink,
+    deleteLink,
+    createGroup,
+    renameGroup,
+    deleteGroup,
+  };
 }

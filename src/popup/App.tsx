@@ -41,23 +41,29 @@ export function App() {
   const navUrl = useAppStore(selectNavUrl);          // encoded, for Apply / Copy
 
   const { copied, copy } = useClipboard();
-  const { links, groups, saveLink, deleteLink, createGroup } = useSavedLinks();
+  const { links, groups, saveLink, updateLink, deleteLink, createGroup } = useSavedLinks();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   /* ---------- Action handlers ---------- */
 
   const handleApply = useCallback(async () => {
-    if (tabState.status !== 'ready' || !navUrl) return;
+    // Read fresh state at call time to avoid stale-closure issues: the user
+    // may click Apply immediately after adding a param, before React has
+    // re-rendered and updated the closure-captured navUrl / tabState.
+    const snap = useAppStore.getState();
+    const currentTabState = snap.tabState;
+    const currentNavUrl = selectNavUrl(snap);
+    if (currentTabState.status !== 'ready' || !currentNavUrl) return;
     try {
-      await tabs.updateUrl(tabState.tabId, navUrl);
+      await tabs.updateUrl(currentTabState.tabId, currentNavUrl);
       announce('URL applied to the current tab.');
     } catch (err) {
       announce(
         `Failed to apply URL: ${err instanceof Error ? err.message : 'unknown error'}`,
       );
     }
-  }, [tabState, navUrl, announce]);
+  }, [announce]);
 
   const handleReset = useCallback(() => {
     resetStore();
@@ -72,6 +78,15 @@ export function App() {
   const handleOpenDrawer = useCallback(() => {
     setDrawerOpen(true);
   }, []);
+
+  const handleUpdateLink = useCallback(
+    (id: string, label: string | undefined, groupId: string) => {
+      void updateLink(id, label, groupId).then(() => {
+        announce('URL updated.');
+      });
+    },
+    [updateLink, announce],
+  );
 
   const handleSaveLink = useCallback(
     ({ url, label, groupId }: { url: string; label?: string; groupId: string }) => {
@@ -135,7 +150,7 @@ export function App() {
         aria-label="Open saved URLs"
         icon={<IconBookmark />}
         onClick={handleOpenDrawer}
-        disabled={!currentUrl}
+        className={styles.bookmarkBtn}
       />
     </>
   );
@@ -192,6 +207,7 @@ export function App() {
         links={links}
         groups={groups}
         onSave={handleSaveLink}
+        onUpdateLink={handleUpdateLink}
         onDeleteLink={(id) => void deleteLink(id)}
         onCreateGroup={createGroup}
         onLoadLink={handleLoadSavedLink}
