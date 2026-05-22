@@ -48,16 +48,22 @@ export function App() {
   /* ---------- Action handlers ---------- */
 
   const handleApply = useCallback(async () => {
-    if (tabState.status !== 'ready' || !navUrl) return;
+    // Read fresh state at call time to avoid stale-closure issues: the user
+    // may click Apply immediately after adding a param, before React has
+    // re-rendered and updated the closure-captured navUrl / tabState.
+    const snap = useAppStore.getState();
+    const currentTabState = snap.tabState;
+    const currentNavUrl = selectNavUrl(snap);
+    if (currentTabState.status !== 'ready' || !currentNavUrl) return;
     try {
-      await tabs.updateUrl(tabState.tabId, navUrl);
+      await tabs.updateUrl(currentTabState.tabId, currentNavUrl);
       announce('URL applied to the current tab.');
     } catch (err) {
       announce(
         `Failed to apply URL: ${err instanceof Error ? err.message : 'unknown error'}`,
       );
     }
-  }, [tabState, navUrl, announce]);
+  }, [announce]);
 
   const handleReset = useCallback(() => {
     resetStore();
