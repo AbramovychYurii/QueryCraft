@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { IconLogo } from '../icons';
+import { IconSearch } from '../icons';
 import styles from './Header.module.css';
 
 interface HeaderProps {
@@ -12,7 +12,7 @@ export function Header({ actions }: HeaderProps) {
     <header className={styles.root}>
       <div className={styles.brand}>
         <span className={styles.logo} aria-hidden="true">
-          <IconLogo />
+          <IconSearch />
         </span>
         <h1 className={styles.title}>QueryCraft</h1>
       </div>

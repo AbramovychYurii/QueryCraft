@@ -142,6 +142,7 @@ export function App() {
         icon={<IconBookmark />}
         onClick={handleOpenDrawer}
         disabled={!currentUrl}
+        className={styles.bookmarkBtn}
       />
     </>
   );
