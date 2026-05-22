@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "QueryCraft",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Inspect, edit, save, and replay URL query parameters on the active tab.",
   "action": {
     "default_popup": "src/popup/index.html",
@@ -15,7 +15,10 @@
     "service_worker": "src/background/service-worker.ts",
     "type": "module"
   },
-  "permissions": ["activeTab", "storage"],
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
