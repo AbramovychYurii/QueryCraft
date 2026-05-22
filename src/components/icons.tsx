@@ -96,6 +96,13 @@ export const IconLogo = () => (
   </svg>
 );
 
+export const IconEdit = () => (
+  <svg {...baseProps}>
+    <path d="M11.5 2.5 L13.5 4.5 L5 13 L2 14 L3 11 Z" />
+    <path d="M10 4 L12 6" />
+  </svg>
+);
+
 export const IconSearch = () => (
   <svg {...baseProps}>
     <circle cx="6.5" cy="6.5" r="4" />

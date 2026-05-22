@@ -4,7 +4,7 @@ import { DEFAULT_GROUP_ID } from '@/lib/storage';
 import { Button } from '../Button';
 import { IconButton } from '../IconButton';
 import { GroupSelector } from '../GroupSelector';
-import { IconChevronLeft, IconClose } from '../icons';
+import { IconChevronLeft, IconClose, IconEdit } from '../icons';
 import { useFocusTrap } from '@/hooks/useFocusTrap';
 import styles from './SavedLinksDrawer.module.css';
 
@@ -15,6 +15,7 @@ interface SavedLinksDrawerProps {
   links: SavedLink[];
   groups: Group[];
   onSave: (input: { url: string; label?: string; groupId: string }) => void;
+  onUpdateLink: (id: string, label: string | undefined, groupId: string) => void;
   onDeleteLink: (id: string) => void;
   onCreateGroup: (name: string) => Promise<Group>;
   onLoadLink: (url: string) => void;
@@ -34,13 +35,15 @@ export function SavedLinksDrawer({
   links,
   groups,
   onSave,
+  onUpdateLink,
   onDeleteLink,
   onCreateGroup,
   onLoadLink,
 }: SavedLinksDrawerProps) {
-  const [mode, setMode] = useState<'list' | 'save'>('list');
+  const [mode, setMode] = useState<'list' | 'save' | 'edit'>('list');
   const [label, setLabel] = useState('');
   const [groupId, setGroupId] = useState(DEFAULT_GROUP_ID);
+  const [editingLink, setEditingLink] = useState<SavedLink | null>(null);
 
   const trapRef = useFocusTrap<HTMLDivElement>(open, onClose);
 
@@ -68,6 +71,27 @@ export function SavedLinksDrawer({
     setMode('list');
   }
 
+  function handleStartEdit(link: SavedLink) {
+    setEditingLink(link);
+    setLabel(link.label ?? '');
+    setGroupId(link.groupId);
+    setMode('edit');
+  }
+
+  function handleUpdate() {
+    if (!editingLink) return;
+    onUpdateLink(editingLink.id, label.trim() || undefined, groupId);
+    setEditingLink(null);
+    setLabel('');
+    setMode('list');
+  }
+
+  function handleCancelEdit() {
+    setEditingLink(null);
+    setLabel('');
+    setMode('list');
+  }
+
   if (!open) return null;
 
   return (
@@ -82,16 +106,20 @@ export function SavedLinksDrawer({
       >
         <header className={styles.header}>
           <div className={styles.headerLeft}>
-            {mode === 'save' && (
+            {(mode === 'save' || mode === 'edit') && (
               <IconButton
                 aria-label="Back to saved list"
                 icon={<IconChevronLeft />}
-                onClick={() => setMode('list')}
+                onClick={mode === 'edit' ? handleCancelEdit : () => setMode('list')}
                 size="sm"
               />
             )}
             <h2 id="saved-links-title" className={styles.title}>
-              {mode === 'save' ? 'Save current URL' : 'Saved URLs'}
+              {mode === 'save'
+                ? 'Save current URL'
+                : mode === 'edit'
+                  ? 'Edit saved URL'
+                  : 'Saved URLs'}
             </h2>
           </div>
           <IconButton aria-label="Close saved URLs" icon={<IconClose />} onClick={onClose} />
@@ -110,12 +138,26 @@ export function SavedLinksDrawer({
               onCancel={() => setMode('list')}
               previewUrl={currentUrl}
             />
+          ) : mode === 'edit' && editingLink ? (
+            <SaveForm
+              label={label}
+              onLabelChange={setLabel}
+              groupId={groupId}
+              onGroupChange={setGroupId}
+              groups={groups}
+              onCreateNewGroup={handleCreateNewGroup}
+              onSubmit={handleUpdate}
+              onCancel={handleCancelEdit}
+              previewUrl={editingLink.url}
+              submitLabel="Update"
+            />
           ) : (
             <GroupedLinksList
               groups={groups}
               linksByGroup={linksByGroup}
               onLoadLink={onLoadLink}
               onDeleteLink={onDeleteLink}
+              onStartEdit={handleStartEdit}
               onStartSave={() => setMode('save')}
               canSave={!!currentUrl}
             />
@@ -138,6 +180,7 @@ interface SaveFormProps {
   onSubmit: () => void;
   onCancel: () => void;
   previewUrl: string;
+  submitLabel?: string;
 }
 
 function SaveForm({
@@ -150,6 +193,7 @@ function SaveForm({
   onSubmit,
   onCancel,
   previewUrl,
+  submitLabel = 'Save',
 }: SaveFormProps) {
   const labelId = 'sl-label';
   return (
@@ -185,7 +229,7 @@ function SaveForm({
 
       <div className={styles.formActions}>
         <Button variant="primary" onClick={onSubmit}>
-          Save
+          {submitLabel}
         </Button>
         <Button variant="ghost" onClick={onCancel}>
           Cancel
@@ -200,6 +244,7 @@ interface GroupedLinksListProps {
   linksByGroup: Map<string, SavedLink[]>;
   onLoadLink: (url: string) => void;
   onDeleteLink: (id: string) => void;
+  onStartEdit: (link: SavedLink) => void;
   onStartSave: () => void;
   canSave: boolean;
 }
@@ -209,6 +254,7 @@ function GroupedLinksList({
   linksByGroup,
   onLoadLink,
   onDeleteLink,
+  onStartEdit,
   onStartSave,
   canSave,
 }: GroupedLinksListProps) {
@@ -278,13 +324,21 @@ function GroupedLinksList({
                         <span className={styles.linkLabel}>{link.label || link.url}</span>
                         {link.label && <span className={styles.linkUrl}>{link.url}</span>}
                       </button>
-                      <IconButton
-                        aria-label={`Delete ${link.label || link.url}`}
-                        icon={<IconClose />}
-                        size="sm"
-                        tone="danger"
-                        onClick={() => onDeleteLink(link.id)}
-                      />
+                      <div className={styles.linkActions}>
+                        <IconButton
+                          aria-label={`Edit ${link.label || link.url}`}
+                          icon={<IconEdit />}
+                          size="sm"
+                          onClick={() => onStartEdit(link)}
+                        />
+                        <IconButton
+                          aria-label={`Delete ${link.label || link.url}`}
+                          icon={<IconClose />}
+                          size="sm"
+                          tone="danger"
+                          onClick={() => onDeleteLink(link.id)}
+                        />
+                      </div>
                     </li>
                   ))}
                 </ul>

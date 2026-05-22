@@ -41,7 +41,7 @@ export function App() {
   const navUrl = useAppStore(selectNavUrl);          // encoded, for Apply / Copy
 
   const { copied, copy } = useClipboard();
-  const { links, groups, saveLink, deleteLink, createGroup } = useSavedLinks();
+  const { links, groups, saveLink, updateLink, deleteLink, createGroup } = useSavedLinks();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -78,6 +78,15 @@ export function App() {
   const handleOpenDrawer = useCallback(() => {
     setDrawerOpen(true);
   }, []);
+
+  const handleUpdateLink = useCallback(
+    (id: string, label: string | undefined, groupId: string) => {
+      void updateLink(id, label, groupId).then(() => {
+        announce('URL updated.');
+      });
+    },
+    [updateLink, announce],
+  );
 
   const handleSaveLink = useCallback(
     ({ url, label, groupId }: { url: string; label?: string; groupId: string }) => {
@@ -141,7 +150,6 @@ export function App() {
         aria-label="Open saved URLs"
         icon={<IconBookmark />}
         onClick={handleOpenDrawer}
-        disabled={!currentUrl}
         className={styles.bookmarkBtn}
       />
     </>
@@ -199,6 +207,7 @@ export function App() {
         links={links}
         groups={groups}
         onSave={handleSaveLink}
+        onUpdateLink={handleUpdateLink}
         onDeleteLink={(id) => void deleteLink(id)}
         onCreateGroup={createGroup}
         onLoadLink={handleLoadSavedLink}

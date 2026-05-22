@@ -239,6 +239,22 @@
   background: var(--color-surface);
 }
 
+.linkActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+}
+
+.linkRow:hover .linkActions,
+.linkRow:focus-within .linkActions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .linkButton {
   flex: 1;
   min-width: 0;
