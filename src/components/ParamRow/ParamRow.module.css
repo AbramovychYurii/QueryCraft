@@ -16,6 +16,77 @@
   min-width: 0;
 }
 
+/* ── Copy-on-hover ── */
+
+.fieldWrap {
+  position: relative;
+}
+
+.copyBtn {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+}
+
+.fieldWrap:hover .copyBtn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.copyBtn:hover {
+  color: var(--color-accent);
+  border-color: var(--color-border-strong);
+}
+
+.copyBtn.copied,
+.copyBtnInline.copied {
+  color: var(--color-success);
+}
+
+/* Structured value: inline copy button (visible on row hover via structuredValue:hover) */
+.copyBtnInline {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+}
+
+.structuredValue:hover .copyBtnInline {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.copyBtnInline:hover {
+  color: var(--color-accent);
+  border-color: var(--color-border-strong);
+}
+
 .removeCell {
   display: flex;
   justify-content: flex-end;
