@@ -52,6 +52,21 @@ describe('useActiveTabUrl', () => {
     });
   });
 
+  it('keeps the tab id when Chrome hides the URL (e.g. a new tab page)', async () => {
+    vi.mocked(chrome.tabs.query).mockResolvedValueOnce([
+      { id: 3, active: true } as chrome.tabs.Tab,
+    ]);
+
+    renderHook(() => useActiveTabUrl());
+
+    await waitFor(() => {
+      expect(useAppStore.getState().tabState.status).toBe('unsupported');
+    });
+
+    // The tab id is what lets a saved link be loaded from this tab.
+    expect(useAppStore.getState().tabState).toMatchObject({ status: 'unsupported', tabId: 3 });
+  });
+
   it('sets error status when chrome.tabs.query rejects', async () => {
     vi.mocked(chrome.tabs.query).mockRejectedValueOnce(new Error('Permission denied'));
 

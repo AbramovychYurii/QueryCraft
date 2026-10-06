@@ -83,10 +83,15 @@ export function GroupedLinksList({
                     const name = link.label || link.url;
                     return (
                       <li key={link.id} className={styles.linkRow}>
-                        <span className={styles.linkText}>
+                        <button
+                          type="button"
+                          className={styles.linkText}
+                          title="Load into editor"
+                          onClick={() => onLoadLink(link.url)}
+                        >
                           <span className={styles.linkLabel}>{name}</span>
                           {link.label && <span className={styles.linkUrl}>{link.url}</span>}
-                        </span>
+                        </button>
                         <span className={styles.linkActions}>
                           <IconButton
                             aria-label={`Load ${name}`}
