@@ -24,28 +24,31 @@
   /* Surfaces */
   --color-bg: oklch(0.15 0 0); /* popup panel */
   --color-bg-outer: oklch(0.1 0 0); /* page behind the panel */
-  --color-surface-inset: oklch(0.19 0 0); /* inputs, url box, saved items */
-  --color-surface-header: oklch(0.18 0 0); /* card header strips */
+  --color-surface-inset: oklch(0.22 0 0); /* inputs, url box, saved items */
+  --color-surface-header: oklch(0.21 0 0); /* card header strips */
 
-  /* Text — descending emphasis */
+  /*
+   * Text — descending emphasis. Every step, faint included, stays at or above
+   * 4.5:1 on bg, surface-inset and surface-header (the README's AA rule).
+   */
   --color-text-primary: oklch(0.95 0 0);
   --color-text-strong: oklch(0.9 0 0); /* param keys, active values */
   --color-text-body: oklch(0.94 0 0); /* editable input text */
   --color-text-secondary: oklch(0.75 0 0); /* outlined button labels */
-  --color-text-muted: oklch(0.55 0 0); /* section labels, meta */
-  --color-text-faint: oklch(0.45 0 0); /* placeholders, idle icons */
+  --color-text-muted: oklch(0.67 0 0); /* section labels, meta */
+  --color-text-faint: oklch(0.62 0 0); /* placeholders, idle icons */
 
   /* Borders — white at low alpha */
-  --color-border-subtle: oklch(1 0 0 / 0.06);
-  --color-border: oklch(1 0 0 / 0.08);
-  --color-border-card: oklch(1 0 0 / 0.09);
-  --color-border-strong: oklch(1 0 0 / 0.12);
+  --color-border-subtle: oklch(1 0 0 / 0.08);
+  --color-border: oklch(1 0 0 / 0.1);
+  --color-border-card: oklch(1 0 0 / 0.12);
+  --color-border-strong: oklch(1 0 0 / 0.16);
   --color-border-focus: oklch(1 0 0 / 0.3);
 
   /* Fills for hover / inset controls */
-  --color-fill-subtle: oklch(1 0 0 / 0.06);
-  --color-fill: oklch(1 0 0 / 0.08);
-  --color-fill-strong: oklch(1 0 0 / 0.1);
+  --color-fill-subtle: oklch(1 0 0 / 0.08);
+  --color-fill: oklch(1 0 0 / 0.1);
+  --color-fill-strong: oklch(1 0 0 / 0.14);
 
   /*
    * Primary action — inverted block by default. When an accent color is
@@ -81,12 +84,12 @@
 
   /* JSON syntax — monochrome, separated by lightness + weight */
   --json-key: oklch(0.95 0 0);
-  --json-index: oklch(0.6 0 0);
+  --json-index: oklch(0.66 0 0);
   --json-string: oklch(0.8 0 0);
   --json-number: oklch(0.9 0 0);
   --json-boolean: oklch(0.85 0 0);
-  --json-null: oklch(0.55 0 0);
-  --json-punct: oklch(0.5 0 0);
+  --json-null: oklch(0.64 0 0);
+  --json-punct: oklch(0.62 0 0);
 }
 
 /* ── Light ────────────────────────────────────────────────────────── */

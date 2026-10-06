@@ -157,9 +157,13 @@
   border-color: var(--color-border-strong);
 }
 
+/* Clicking the name loads the link into the editor. */
 .linkText {
   flex: 1;
   min-width: 0;
+  text-align: left;
+  line-height: inherit;
+  border-radius: var(--radius-sm);
 }
 
 .linkLabel {
@@ -170,6 +174,15 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color var(--transition-fast);
+}
+
+.linkText:hover .linkLabel {
+  color: var(--color-text-primary);
+}
+
+.linkText:hover .linkUrl {
+  color: var(--color-text-secondary);
 }
 
 .linkUrl {
@@ -181,6 +194,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color var(--transition-fast);
 }
 
 .linkActions {
