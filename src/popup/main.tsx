@@ -1,6 +1,11 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
+// Bundled fonts: MV3's content security policy blocks font CDNs.
+import '@fontsource-variable/inter';
+import '@fontsource/geist-mono/400.css';
+import '@fontsource/geist-mono/500.css';
+import '@fontsource/geist-mono/600.css';
 import '@/styles/global.css';
 
 // Chrome sizes the popup from the document box and can ignore CSS height in

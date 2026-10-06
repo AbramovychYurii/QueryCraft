@@ -30,13 +30,19 @@ export function useTheme(): ResolvedTheme {
   const isFirstApply = useRef(true);
   useEffect(() => {
     const root = document.documentElement;
+    // `data-theme` drives tokens.css (the CSS Modules components), the `dark`
+    // class drives coss's dark variant; both stay in step until Phase 7.
+    const apply = () => {
+      root.setAttribute('data-theme', resolved);
+      root.classList.toggle('dark', resolved === 'dark');
+    };
     if (isFirstApply.current) {
       isFirstApply.current = false;
-      root.setAttribute('data-theme', resolved);
+      apply();
       return;
     }
     root.setAttribute('data-theme-switching', '');
-    root.setAttribute('data-theme', resolved);
+    apply();
     // Two frames: one for the attribute to take effect, one for the repaint.
     const raf = requestAnimationFrame(() => {
       requestAnimationFrame(() => root.removeAttribute('data-theme-switching'));

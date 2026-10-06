@@ -150,14 +150,8 @@
 /* ── Theme-agnostic scales ────────────────────────────────────────── */
 
 :root {
-  /* Typography. Inter / JetBrains Mono are used when present on the system;
-     the extension ships no webfonts (remote font CDNs are blocked by the
-     MV3 content security policy), so the fallbacks matter. */
-  --font-sans:
-    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  --font-mono:
-    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-
+  /* Typography. --font-sans / --font-mono live in theme.css's @theme now:
+     an unlayered copy here would override Tailwind's for every element. */
   --font-size-2xs: 10.5px;
   --font-size-xs: 11px;
   --font-size-sm: 11.5px;

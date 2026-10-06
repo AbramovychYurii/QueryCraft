@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>QueryCraft · param list</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#262626}a:hover{color:#000}
+.qc{--font-sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--font-mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
+.qc-light{color-scheme:light;--background:#ffffff;--foreground:#262626;--popover:#ffffff;--primary:#262626;--primary-foreground:#fafafa;--secondary:rgb(0 0 0 / .04);--secondary-foreground:#262626;--muted:rgb(0 0 0 / .04);--muted-foreground:#686868;--accent:rgb(0 0 0 / .04);--accent-foreground:#262626;--destructive-foreground:#c10007;--border:rgb(0 0 0 / .08);--input:rgb(0 0 0 / .1);--ring:#737373;--control:#ffffff;--control-shadow:0 1px 2px rgb(0 0 0 / .05);--popover-shadow:0 10px 15px -3px rgb(0 0 0 / .08),0 4px 6px -4px rgb(0 0 0 / .06);--accent-text:#262626;--stage:#ececec;--stage-foreground:#595959;--frame-shadow:0 0 0 1px rgb(0 0 0 / .1),0 16px 40px -8px rgb(0 0 0 / .18)}
+.qc-dark{color-scheme:dark;--background:#161616;--foreground:#f5f5f5;--popover:#1b1b1b;--primary:#f5f5f5;--primary-foreground:#262626;--secondary:rgb(255 255 255 / .04);--secondary-foreground:#f5f5f5;--muted:rgb(255 255 255 / .04);--muted-foreground:#8f8f8f;--accent:rgb(255 255 255 / .04);--accent-foreground:#f5f5f5;--destructive-foreground:#ff6467;--border:rgb(255 255 255 / .06);--input:rgb(255 255 255 / .08);--ring:#a1a1a1;--control:rgb(255 255 255 / .026);--control-shadow:none;--popover-shadow:0 10px 15px -3px rgb(0 0 0 / .4),0 4px 6px -4px rgb(0 0 0 / .3);--accent-text:#f5f5f5;--stage:#0a0a0a;--stage-foreground:#9e9e9e;--frame-shadow:0 0 0 1px rgb(255 255 255 / .1),0 16px 40px -8px rgb(0 0 0 / .7)}
+.qc-light.qc-violet{--primary:#9575e0;--primary-foreground:#0a0a0a;--accent-text:#7250b8}
+.qc-dark.qc-violet{--primary:#9575e0;--primary-foreground:#0a0a0a;--accent-text:#a58ce8}
+.qc input,.qc textarea,.qc button{font:inherit;color:inherit;margin:0}
+.qc input::placeholder{color:var(--muted-foreground);opacity:1}
+.qc input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+.qc :focus{outline:none}
+.qc button:focus-visible{box-shadow:0 0 0 1px var(--background),0 0 0 3px var(--ring) !important}
+.qc .field:has(:focus-visible){position:relative;z-index:1;border-color:var(--ring) !important;box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 24%,transparent) !important}
+</style>
+</helmet>
+<div style="width: 920px; height: 664px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased">
+<sc-for list="{{cells}}" as="c" hint-placeholder-count="2">
+<div class="qc {{c.cls}} {{accentCls}}" style="background: var(--stage); padding: 32px 40px 40px; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; box-sizing: border-box">
+<p style="margin: 0; font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 500; color: var(--stage-foreground)">{{c.caption}}</p>
+<div style="position: relative; width: 380px; {{c.popupStyle}} display: flex; flex-direction: column; background: var(--background); color: var(--foreground); border-radius: 10px; box-shadow: var(--frame-shadow); overflow: hidden; font-family: var(--font-sans); font-size: 14px; line-height: 20px">
+<header style="display: flex; align-items: center; justify-content: space-between; flex: none; padding: 12px 12px 12px 16px; border-bottom: 1px solid var(--border)">
+<div style="display: flex; align-items: center; gap: 8px">
+<span aria-hidden="true" style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; background: var(--primary); color: var(--primary-foreground)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></span>
+<h1 style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 600">QueryCraft</h1>
+</div>
+<div style="display: flex; align-items: center; gap: 2px">
+<button type="button" aria-label="Command palette" aria-keyshortcuts="Meta+K" style="display: inline-flex; align-items: center; justify-content: center; flex: none; padding: 0; box-sizing: border-box; cursor: pointer; gap: 4px; height: 28px; padding: 0 4px; border-radius: 10px; border: 1px solid transparent; background: transparent"><kbd style="display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; height: 20px; min-width: 20px; padding: 0 4px; border-radius: 4px; background: var(--muted); color: var(--muted-foreground); font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 500">⌘</kbd><kbd style="display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; height: 20px; min-width: 20px; padding: 0 4px; border-radius: 4px; background: var(--muted); color: var(--muted-foreground); font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 500">K</kbd></button>
+<button type="button" aria-label="Saved URLs" aria-keyshortcuts="Meta+S" style="display: inline-flex; align-items: center; justify-content: center; flex: none; padding: 0; box-sizing: border-box; cursor: pointer; width: 28px; height: 28px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: var(--foreground)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; opacity: 0.8"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path></svg></button>
+<button type="button" aria-label="Settings" style="display: inline-flex; align-items: center; justify-content: center; flex: none; padding: 0; box-sizing: border-box; cursor: pointer; width: 28px; height: 28px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: var(--foreground)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; opacity: 0.8"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+</div>
+</header>
+<div style="display: flex; flex-direction: column; gap: 12px; flex: 1 1 auto; min-height: 0; padding: 12px 16px">
+<div class="field" style="position: relative; flex: none; border: 1px solid var(--input); border-radius: 10px; background: var(--control); box-shadow: var(--control-shadow); padding: 5px 0">
+<div style="position: relative; max-height: 80px; overflow: hidden; -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent)">
+<div aria-hidden="true" style="padding: 0 11px; font-family: var(--font-mono); font-size: 13px; line-height: 20px; white-space: pre-wrap; word-break: break-all; color: var(--muted-foreground)"><sc-for list="{{c.urlParts}}" as="p" hint-placeholder-count="12"><sc-if value="{{p.isB}}" hint-placeholder-val="{{true}}"><span>{{p.t}}</span></sc-if><sc-if value="{{p.isK}}" hint-placeholder-val="{{false}}"><span style="color: var(--accent-text); font-weight: 500">{{p.t}}</span></sc-if><sc-if value="{{p.isV}}" hint-placeholder-val="{{false}}"><span style="color: var(--foreground)">{{p.t}}</span></sc-if></sc-for></div>
+<textarea aria-label="Current URL" value="{{c.url}}" style="position: absolute; inset: 0; width: 100%; height: 100%; box-sizing: border-box; margin: 0; padding: 0 11px; border: 0; resize: none; overflow: hidden; background: transparent; color: transparent; caret-color: var(--foreground); font-family: var(--font-mono); font-size: 13px; line-height: 20px; white-space: pre-wrap; word-break: break-all; outline: none"></textarea>
+</div>
+</div>
+<div class="field" style="display: flex; align-items: center; flex: none; height: 32px; box-sizing: border-box; border: 1px solid var(--input); border-radius: 10px; background: var(--control); box-shadow: var(--control-shadow)">
+<span aria-hidden="true" style="display: flex; padding-left: 11px; color: var(--muted-foreground)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></span>
+<input type="search" aria-label="Filter parameters by key" aria-keyshortcuts="/" placeholder="Filter parameters" value="" style="flex: 1 1 0; min-width: 0; height: 30px; border: 0; background: transparent; padding: 0 8px; font-family: var(--font-sans); font-size: 14px; color: var(--foreground); outline: none">
+<span style="display: flex; padding-right: 5px"><kbd style="display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; height: 20px; min-width: 20px; padding: 0 4px; border-radius: 4px; background: var(--muted); color: var(--muted-foreground); font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 500">/</kbd></span>
+</div>
+<section aria-label="Parameters" style="display: flex; flex-direction: column; gap: 8px; flex: 1 1 auto; min-height: 0">
+<div style="display: flex; align-items: center; justify-content: space-between; height: 24px; flex: none">
+<div style="display: flex; align-items: center; gap: 6px">
+<h2 style="margin: 0; font-size: 12px; line-height: 16px; font-weight: 500; color: var(--muted-foreground)">Parameters</h2>
+<span aria-label="{{c.count}} parameters" style="display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; height: 18px; min-width: 18px; padding: 0 3px; border-radius: 6px; background: var(--secondary); color: var(--secondary-foreground); font-size: 12px; line-height: 16px; font-weight: 500; font-variant-numeric: tabular-nums">{{c.count}}</span>
+</div>
+<button type="button" aria-label="Parameter actions" aria-haspopup="menu" style="display: inline-flex; align-items: center; justify-content: center; flex: none; padding: 0; box-sizing: border-box; cursor: pointer; width: 24px; height: 24px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--muted-foreground)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+</div>
+<div style="position: relative; margin: 0 -16px; {{c.viewportStyle}}">
+<div style="padding: 0 16px; {{c.maskStyle}}">
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; {{c.listShift}}">
+<sc-for list="{{c.rows}}" as="r" hint-placeholder-count="6">
+<li style="display: flex; align-items: center; gap: 4px">
+<div role="group" aria-label="Parameter {{r.key}}" style="display: flex; flex: 1 1 0; min-width: 0">
+<span class="field" style="display: flex; align-items: center; height: 28px; box-sizing: border-box; border: 1px solid var(--input); background: var(--control); box-shadow: var(--control-shadow); flex: 0 0 40%; min-width: 0; border-right: 0; border-radius: 10px 0 0 10px"><input aria-label="Key" value="{{r.key}}" style="width: 100%; min-width: 0; height: 26px; box-sizing: border-box; border: 0; background: transparent; padding: 0 9px; font-family: var(--font-mono); font-size: 13px; line-height: 26px; color: var(--foreground); text-overflow: ellipsis; outline: none; font-weight: 500"></span>
+<sc-if value="{{r.focus}}" hint-placeholder-val="{{false}}"><span aria-hidden="true" style="width: 1px; flex: none; align-self: stretch; background: var(--ring); position: relative; z-index: 2"></span></sc-if>
+<sc-if value="{{r.noFocus}}" hint-placeholder-val="{{true}}"><span aria-hidden="true" style="width: 1px; flex: none; align-self: stretch; background: var(--input)"></span></sc-if>
+<sc-if value="{{r.isText}}" hint-placeholder-val="{{true}}"><span class="field" style="display: flex; align-items: center; height: 28px; box-sizing: border-box; border: 1px solid var(--input); background: var(--control); box-shadow: var(--control-shadow); flex: 1 1 0; min-width: 0; border-left: 0; border-radius: 0 10px 10px 0"><input aria-label="Value" value="{{r.value}}" style="width: 100%; min-width: 0; height: 26px; box-sizing: border-box; border: 0; background: transparent; padding: 0 9px; font-family: var(--font-mono); font-size: 13px; line-height: 26px; color: var(--foreground); text-overflow: ellipsis; outline: none"></span></sc-if>
+<sc-if value="{{r.isTextFocus}}" hint-placeholder-val="{{false}}"><span class="field" style="display: flex; align-items: center; height: 28px; box-sizing: border-box; border: 1px solid var(--input); background: var(--control); box-shadow: var(--control-shadow); flex: 1 1 0; min-width: 0; border-left: 0; border-radius: 0 10px 10px 0; position: relative; z-index: 1; border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 24%, transparent)"><input aria-label="Value" value="{{r.value}}" style="width: 100%; min-width: 0; height: 26px; box-sizing: border-box; border: 0; background: transparent; padding: 0 9px; font-family: var(--font-mono); font-size: 13px; line-height: 26px; color: var(--foreground); text-overflow: ellipsis; outline: none"></span></sc-if>
+<sc-if value="{{r.isBool}}" hint-placeholder-val="{{false}}"><span style="display: flex; align-items: center; height: 28px; box-sizing: border-box; border: 1px solid var(--input); background: var(--control); box-shadow: var(--control-shadow); flex: 1 1 0; min-width: 0; border-left: 0; border-radius: 0 10px 10px 0; gap: 8px; padding: 0 9px"><button type="button" role="switch" aria-checked="{{r.checkedStr}}" aria-label="Value" style="display: inline-flex; align-items: center; flex: none; width: 30px; height: 18px; padding: 1px; box-sizing: border-box; border: 0; border-radius: 999px; cursor: pointer; {{r.trackStyle}}"><span aria-hidden="true" style="display: block; width: 16px; height: 16px; border-radius: 999px; background: var(--background); box-shadow: 0 1px 3px rgb(0 0 0 / 0.12), 0 1px 2px rgb(0 0 0 / 0.08); {{r.thumbStyle}}"></span></button><span style="font-family: var(--font-mono); font-size: 13px; line-height: 20px; color: var(--foreground)">{{r.value}}</span></span></sc-if>
+<sc-if value="{{r.isJson}}" hint-placeholder-val="{{false}}"><button type="button" aria-label="Edit {{r.key}}, {{r.meta}}" style="display: flex; align-items: center; height: 28px; box-sizing: border-box; border: 1px solid var(--input); background: var(--control); box-shadow: var(--control-shadow); flex: 1 1 0; min-width: 0; border-left: 0; border-radius: 0 10px 10px 0; gap: 6px; padding: 0 5px 0 9px; text-align: left; cursor: pointer; color: var(--muted-foreground); font-family: var(--font-mono); font-size: 13px; line-height: 20px"><span style="flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{r.value}}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="m9 18 6-6-6-6"></path></svg></button></sc-if>
+<sc-if value="{{r.isDsl}}" hint-placeholder-val="{{false}}"><button type="button" aria-label="Edit filter {{r.key}}, {{r.meta}}" style="display: flex; align-items: center; height: 28px; box-sizing: border-box; border: 1px solid var(--input); background: var(--control); box-shadow: var(--control-shadow); flex: 1 1 0; min-width: 0; border-left: 0; border-radius: 0 10px 10px 0; gap: 6px; padding: 0 5px 0 9px; text-align: left; cursor: pointer; color: var(--foreground); font-family: var(--font-sans); font-size: 14px; line-height: 20px"><span style="display: flex; color: var(--muted-foreground)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 6h18"></path><path d="M7 12h10"></path><path d="M10 18h4"></path></svg></span><span style="flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{r.value}}</span><span style="display: flex; color: var(--muted-foreground)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="m9 18 6-6-6-6"></path></svg></span></button></sc-if>
+</div>
+<button type="button" aria-label="Remove {{r.key}}" style="display: inline-flex; align-items: center; justify-content: center; flex: none; padding: 0; box-sizing: border-box; cursor: pointer; width: 24px; height: 24px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--muted-foreground)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+</li>
+</sc-for>
+</ul>
+</div>
+<sc-if value="{{c.scrolled}}" hint-placeholder-val="{{false}}"><div aria-hidden="true" style="position: absolute; right: 4px; width: 6px; border-radius: 999px; background: color-mix(in srgb, var(--foreground) 20%, transparent); {{c.thumbStyle}}"></div></sc-if>
+</div>
+<div aria-hidden="true" style="height: 1px; flex: none; background: var(--border)"></div>
+<div role="group" aria-label="Add parameter" style="display: flex; align-items: center; gap: 4px; flex: none">
+<div style="display: flex; flex: 1 1 0; min-width: 0">
+<sc-if value="{{c.acOpen}}" hint-placeholder-val="{{false}}"><span class="field" style="display: flex; align-items: center; height: 28px; box-sizing: border-box; border: 1px solid var(--input); background: var(--control); box-shadow: var(--control-shadow); flex: 0 0 40%; min-width: 0; border-right: 0; border-radius: 10px 0 0 10px; position: relative; z-index: 1; border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 24%, transparent)"><span aria-hidden="true" style="display: flex; padding-left: 9px; color: var(--muted-foreground)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></span><input role="combobox" aria-expanded="true" aria-autocomplete="list" aria-label="New parameter key" value="{{c.acQuery}}" style="width: 100%; min-width: 0; height: 26px; box-sizing: border-box; border: 0; background: transparent; padding: 0 9px; font-family: var(--font-mono); font-size: 13px; line-height: 26px; color: var(--foreground); text-overflow: ellipsis; outline: none; font-weight: 500; padding-left: 6px"></span><span aria-hidden="true" style="width: 1px; flex: none; align-self: stretch; background: var(--ring); position: relative; z-index: 2"></span></sc-if>
+<sc-if value="{{c.acClosed}}" hint-placeholder-val="{{true}}"><span class="field" style="display: flex; align-items: center; height: 28px; box-sizing: border-box; border: 1px solid var(--input); background: var(--control); box-shadow: var(--control-shadow); flex: 0 0 40%; min-width: 0; border-right: 0; border-radius: 10px 0 0 10px"><span aria-hidden="true" style="display: flex; padding-left: 9px; color: var(--muted-foreground)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></span><input role="combobox" aria-expanded="false" aria-autocomplete="list" aria-label="New parameter key" placeholder="key" value="" style="width: 100%; min-width: 0; height: 26px; box-sizing: border-box; border: 0; background: transparent; padding: 0 9px; font-family: var(--font-mono); font-size: 13px; line-height: 26px; color: var(--foreground); text-overflow: ellipsis; outline: none; font-weight: 500; padding-left: 6px"></span><span aria-hidden="true" style="width: 1px; flex: none; align-self: stretch; background: var(--input)"></span></sc-if>
+<span class="field" style="display: flex; align-items: center; height: 28px; box-sizing: border-box; border: 1px solid var(--input); background: var(--control); box-shadow: var(--control-shadow); flex: 1 1 0; min-width: 0; border-left: 0; border-radius: 0 10px 10px 0"><input aria-label="New parameter value" placeholder="value" value="" style="width: 100%; min-width: 0; height: 26px; box-sizing: border-box; border: 0; background: transparent; padding: 0 9px; font-family: var(--font-mono); font-size: 13px; line-height: 26px; color: var(--foreground); text-overflow: ellipsis; outline: none"></span>
+</div>
+<button type="button" aria-label="Add parameter" aria-keyshortcuts="Enter" disabled="{{c.addDisabled}}" style="display: inline-flex; align-items: center; justify-content: center; flex: none; padding: 0; box-sizing: border-box; cursor: pointer; width: 24px; height: 24px; border-radius: 8px; border: 1px solid var(--input); background: var(--control); color: var(--foreground); box-shadow: var(--control-shadow); opacity: {{c.addOpacity}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><polyline points="9 10 4 15 9 20"></polyline><path d="M20 4v7a4 4 0 0 1-4 4H4"></path></svg></button>
+</div>
+</section>
+</div>
+<footer style="display: flex; align-items: center; gap: 8px; flex: none; padding: 12px 16px; border-top: 1px solid var(--border)">
+<button type="button" aria-keyshortcuts="Meta+Enter" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 32px; padding: 0 11px; box-sizing: border-box; border-radius: 10px; font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 500; white-space: nowrap; cursor: pointer; border: 1px solid var(--primary); background: var(--primary); color: var(--primary-foreground); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.16), 0 1px 2px color-mix(in srgb, var(--primary) 24%, transparent)">Apply<kbd style="display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; height: 20px; min-width: 20px; padding: 0 4px; border-radius: 4px; background: color-mix(in srgb, var(--primary-foreground) 12%, transparent); color: var(--primary-foreground); font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 500">⌘↵</kbd></button>
+<button type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 32px; padding: 0 11px; box-sizing: border-box; border-radius: 10px; font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 500; white-space: nowrap; cursor: pointer; border: 1px solid transparent; background: transparent; color: var(--foreground)">Reset</button>
+<span style="flex: 1 1 0"></span>
+<button type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 32px; padding: 0 11px; box-sizing: border-box; border-radius: 10px; font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 500; white-space: nowrap; cursor: pointer; border: 1px solid var(--input); background: var(--control); color: var(--foreground); box-shadow: var(--control-shadow)">Copy</button>
+<button type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 32px; padding: 0 11px; box-sizing: border-box; border-radius: 10px; font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 500; white-space: nowrap; cursor: pointer; border: 1px solid var(--input); background: var(--control); color: var(--foreground); box-shadow: var(--control-shadow)">Save</button>
+</footer>
+<sc-if value="{{c.acOpen}}" hint-placeholder-val="{{false}}">
+<div style="position: absolute; left: 16px; bottom: 101px; width: 320px; max-height: 192px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: var(--popover); color: var(--foreground); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--popover-shadow); z-index: 10">
+<div role="listbox" aria-label="Key suggestions" style="padding: 4px 12px 4px 4px; overflow: hidden; -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent)">
+<div role="group" aria-label="Common keys">
+<div aria-hidden="true" style="padding: 6px 8px; font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 500; color: var(--muted-foreground)">Common keys</div>
+<sc-for list="{{c.acItems}}" as="o" hint-placeholder-count="7">
+<sc-if value="{{o.hi}}" hint-placeholder-val="{{false}}"><div role="option" aria-selected="true" style="display: flex; align-items: center; min-height: 28px; box-sizing: border-box; padding: 4px 8px; border-radius: 6px; font-family: var(--font-mono); font-size: 13px; line-height: 20px; color: var(--foreground); cursor: default; background: var(--accent); box-shadow: inset 0 0 0 1px var(--ring)"><span style="color: var(--muted-foreground)">{{o.pre}}</span><span style="font-weight: 500">{{o.rest}}</span></div></sc-if>
+<sc-if value="{{o.lo}}" hint-placeholder-val="{{true}}"><div role="option" aria-selected="false" style="display: flex; align-items: center; min-height: 28px; box-sizing: border-box; padding: 4px 8px; border-radius: 6px; font-family: var(--font-mono); font-size: 13px; line-height: 20px; color: var(--foreground); cursor: default"><span style="color: var(--muted-foreground)">{{o.pre}}</span><span style="font-weight: 500">{{o.rest}}</span></div></sc-if>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent": {"editor": "enum", "options": ["mono", "violet"], "default": "mono", "section": "Theme"}, "$preview": {"width": 920, "height": 664}}'>
+
+function buildUrl(base, P) {
+  const parts = [{ t: base, isB: true }];
+  P.forEach((p, i) => {
+    parts.push({ t: i ? '&' : '?', isB: true });
+    parts.push({ t: p[0], isK: true });
+    parts.push({ t: '=', isB: true });
+    parts.push({ t: p[1], isV: true });
+  });
+  return { url: base + '?' + P.map((p) => p[0] + '=' + p[1]).join('&'), urlParts: parts };
+}
+function buildRows(P, focusKey) {
+  return P.map((p) => {
+    const kind = p[2];
+    const f = p[0] === focusKey;
+    const on = p[1].toLowerCase() === 'true';
+    return {
+      key: p[0],
+      value: kind === 'dsl' ? p[3] : p[1],
+      meta: p[4] || '',
+      focus: f, noFocus: !f,
+      isText: kind === 'text' && !f, isTextFocus: kind === 'text' && f,
+      isBool: kind === 'bool', isJson: kind === 'json', isDsl: kind === 'dsl',
+      checkedStr: on ? 'true' : 'false',
+      trackStyle: on ? 'background: var(--primary)' : 'background: var(--input)',
+      thumbStyle: on ? 'transform: translateX(12px)' : 'transform: translateX(0)'
+    };
+  });
+}
+const BASE = 'https://app.example.com/events';
+const DSL = ['event-filters', '"(severity-in-high,critical)AND(status-is_not-resolved)"', 'dsl', '2 conditions', '2 conditions: severity in high, critical, and status is not resolved'];
+const JSONP = ['cols', '["time","severity","source"]', 'json', '', 'JSON array, 3 items'];
+const LONG = ['redirect_uri', 'https://auth.example.com/callback?state=8f2c4e1a', 'text'];
+
+const P = [['page', '2', 'text'], ['live', 'true', 'bool'], ['sort', '-created_at', 'text'], DSL, JSONP, LONG];
+class Component extends DCLogic {
+  renderVals() {
+    const accent = this.props.accent ?? 'mono';
+    const u = buildUrl(BASE, P);
+    const common = {
+      url: u.url, urlParts: u.urlParts, count: P.length, rows: buildRows(P, 'sort'),
+      popupStyle: '', viewportStyle: 'flex: none;', maskStyle: '', listShift: '',
+      scrolled: false, thumbStyle: '', acOpen: false, acClosed: true, acQuery: '', acItems: [],
+      addDisabled: true, addOpacity: '0.64'
+    };
+    return {
+      accentCls: accent === 'violet' ? 'qc-violet' : '',
+      cells: [
+        Object.assign({}, common, { cls: 'qc-light', caption: 'Light · content height' }),
+        Object.assign({}, common, { cls: 'qc-dark', caption: 'Dark · content height' })
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>
