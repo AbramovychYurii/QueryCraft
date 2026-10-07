@@ -22,6 +22,8 @@ export function TooltipPopup({
   className,
   align = "center",
   sideOffset = 4,
+  // QueryCraft density: keep tooltips 8px inside the 380px popup (docs/redesign §5.3)
+  collisionPadding = 8,
   side = "top",
   anchor,
   children,
@@ -31,6 +33,7 @@ export function TooltipPopup({
   align?: TooltipPrimitive.Positioner.Props["align"];
   side?: TooltipPrimitive.Positioner.Props["side"];
   sideOffset?: TooltipPrimitive.Positioner.Props["sideOffset"];
+  collisionPadding?: TooltipPrimitive.Positioner.Props["collisionPadding"];
   anchor?: TooltipPrimitive.Positioner.Props["anchor"];
   portalProps?: TooltipPrimitive.Portal.Props;
 }): React.ReactElement {
@@ -39,6 +42,7 @@ export function TooltipPopup({
       <TooltipPrimitive.Positioner
         align={align}
         anchor={anchor}
+        collisionPadding={collisionPadding}
         className="z-50 h-(--positioner-height) w-(--positioner-width) max-w-(--available-width) transition-[top,left,right,bottom,transform] data-instant:transition-none"
         data-slot="tooltip-positioner"
         side={side}

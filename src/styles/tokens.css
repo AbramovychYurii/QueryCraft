@@ -201,11 +201,9 @@
   --min-target: 24px;
 
   /*
-   * Popup dimensions. The handoff specifies 380x640, but Chrome hard-caps
-   * extension popups at 800x600 — a 640px panel would simply be clipped.
-   * The layout is a flex column with a scrolling middle, so 600 is the
-   * faithful rendering of the design within the platform limit.
+   * Popup width. The height follows the content up to Chrome's 600px cap
+   * (src/popup/popupHeight.ts). Prefixed: Base UI sizes its popups with
+   * --popup-width / --popup-height, and an inherited :root value would win.
    */
-  --popup-width: 380px;
-  --popup-height: 600px;
+  --qc-popup-width: 380px;
 }

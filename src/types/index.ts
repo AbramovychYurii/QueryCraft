@@ -49,9 +49,11 @@ export interface Group {
 
 /**
  * Chosen accent color as a hex string, or `null` for the monochrome default.
- * The theme itself is not a preference — it always follows the OS.
  */
 export type AccentColor = string | null;
+
+/** Theme setting: follow the OS, or force one scheme for QueryCraft only. */
+export type ThemePreference = 'system' | 'light' | 'dark';
 
 /** Special state when the active tab's URL is a browser-internal page we can't edit. */
 export type TabLoadState =

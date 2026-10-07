@@ -62,9 +62,11 @@ function upsertReplayClassName(toast: {
 function Toasts({
   position,
   portalProps,
+  viewportClassName,
 }: {
   position: ToastPosition;
   portalProps?: React.ComponentProps<typeof Toast.Portal>;
+  viewportClassName?: string;
 }): React.ReactElement {
   const { toasts } = Toast.useToastManager();
   const swipeDirection = getSwipeDirection(position);
@@ -81,6 +83,8 @@ function Toasts({
           "data-[position*=left]:left-(--toast-inset)",
           "data-[position*=right]:right-(--toast-inset)",
           "data-[position*=center]:left-1/2 data-[position*=center]:-translate-x-1/2",
+          // QueryCraft density: lets the 380px popup set the inset and offset (sized for pages otherwise)
+          viewportClassName,
         )}
         data-position={position}
         data-slot="toast-viewport"
@@ -289,18 +293,25 @@ export type ToastPosition =
 export interface ToastProviderProps extends Toast.Provider.Props {
   position?: ToastPosition;
   portalProps?: React.ComponentProps<typeof Toast.Portal>;
+  // QueryCraft density: classes merged into the viewport after its defaults
+  viewportClassName?: string;
 }
 
 export function ToastProvider({
   children,
   position = "bottom-right",
   portalProps,
+  viewportClassName,
   ...props
 }: ToastProviderProps): React.ReactElement {
   return (
     <Toast.Provider toastManager={toastManager} {...props}>
       {children}
-      <Toasts portalProps={portalProps} position={position} />
+      <Toasts
+        portalProps={portalProps}
+        position={position}
+        viewportClassName={viewportClassName}
+      />
     </Toast.Provider>
   );
 }

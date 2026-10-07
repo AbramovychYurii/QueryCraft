@@ -3,16 +3,10 @@
   flex-direction: column;
 }
 
-/* Separates the filter from the URL preview above it. */
-.searchWrap {
-  margin-top: var(--space-8);
-}
-
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: var(--space-9);
   margin-bottom: var(--space-5);
 }
 

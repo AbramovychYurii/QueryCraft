@@ -13,7 +13,7 @@ interface AppState {
   /** Current editable parsed URL — what the user sees & edits. */
   currentParsed: ParsedUrl | null;
 
-  /** Last announcement for the aria-live region. Monotonically replaced on each event. */
+  /** Latest status message; the popup shows it as a toast, then clears it. */
   announcement: string;
 
   /** Actions */
@@ -141,7 +141,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         ...state.currentParsed,
         params: [...state.currentParsed.params, newParam],
       },
-      announcement: `Added parameter ${key}.`,
+      // No announcement: the new row is the visible feedback, and the UI
+      // announces "Added {key}" through its hidden live region (docs/redesign §7.3).
     });
   },
 

@@ -32,6 +32,8 @@ export function MenuPopup({
   children,
   className,
   sideOffset = 4,
+  // QueryCraft density: keep popups 8px inside the 380px popup (docs/redesign §5.3)
+  collisionPadding = 8,
   align = "center",
   alignOffset,
   side = "bottom",
@@ -41,6 +43,7 @@ export function MenuPopup({
 }: MenuPrimitive.Popup.Props & {
   align?: MenuPrimitive.Positioner.Props["align"];
   sideOffset?: MenuPrimitive.Positioner.Props["sideOffset"];
+  collisionPadding?: MenuPrimitive.Positioner.Props["collisionPadding"];
   alignOffset?: MenuPrimitive.Positioner.Props["alignOffset"];
   side?: MenuPrimitive.Positioner.Props["side"];
   anchor?: MenuPrimitive.Positioner.Props["anchor"];
@@ -56,6 +59,7 @@ export function MenuPopup({
         data-slot="menu-positioner"
         side={side}
         sideOffset={sideOffset}
+        collisionPadding={collisionPadding}
       >
         <MenuPrimitive.Popup
           className={cn(

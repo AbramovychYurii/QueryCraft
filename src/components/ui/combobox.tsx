@@ -160,6 +160,8 @@ export function ComboboxPopup({
   children,
   side = "bottom",
   sideOffset = 4,
+  // QueryCraft density: keep popups 8px inside the 380px popup (docs/redesign §5.3)
+  collisionPadding = 8,
   alignOffset,
   align = "start",
   anchor: anchorProp,
@@ -168,6 +170,7 @@ export function ComboboxPopup({
 }: ComboboxPrimitive.Popup.Props & {
   align?: ComboboxPrimitive.Positioner.Props["align"];
   sideOffset?: ComboboxPrimitive.Positioner.Props["sideOffset"];
+  collisionPadding?: ComboboxPrimitive.Positioner.Props["collisionPadding"];
   alignOffset?: ComboboxPrimitive.Positioner.Props["alignOffset"];
   side?: ComboboxPrimitive.Positioner.Props["side"];
   anchor?: ComboboxPrimitive.Positioner.Props["anchor"];
@@ -186,6 +189,7 @@ export function ComboboxPopup({
         data-slot="combobox-positioner"
         side={side}
         sideOffset={sideOffset}
+        collisionPadding={collisionPadding}
       >
         <span
           className={cn(

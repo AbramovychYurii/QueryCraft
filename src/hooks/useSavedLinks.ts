@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { DEFAULT_GROUP_ID, storage } from '@/lib/storage';
 import { generateId } from '@/lib/id';
 import type { Group, SavedLink } from '@/types';
@@ -10,6 +10,8 @@ export function useSavedLinks(): {
   saveLink: (input: { url: string; label?: string; groupId?: string }) => Promise<SavedLink>;
   updateLink: (id: string, label: string | undefined, groupId: string) => Promise<void>;
   deleteLink: (id: string) => Promise<void>;
+  /** Put a deleted link back at its old position (Undo). */
+  restoreLink: (link: SavedLink, index: number) => Promise<void>;
   createGroup: (name: string) => Promise<Group>;
   renameGroup: (id: string, name: string) => Promise<void>;
   deleteGroup: (id: string) => Promise<void>;
@@ -17,6 +19,10 @@ export function useSavedLinks(): {
   const [links, setLinks] = useState<SavedLink[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  // Undo runs from a toast created before the delete re-rendered: it must read
+  // the current list, not the one its callback closed over.
+  const linksRef = useRef(links);
+  linksRef.current = links;
 
   useEffect(() => {
     let cancelled = false;
@@ -62,6 +68,15 @@ export function useSavedLinks(): {
     },
     [links],
   );
+
+  const restoreLink = useCallback(async (link: SavedLink, index: number) => {
+    const current = linksRef.current;
+    if (current.some((l) => l.id === link.id)) return;
+    const next = [...current];
+    next.splice(Math.min(index, next.length), 0, link);
+    setLinks(next);
+    await storage.setSavedLinks(next);
+  }, []);
 
   const createGroup = useCallback(
     async (name: string) => {
@@ -117,6 +132,7 @@ export function useSavedLinks(): {
     saveLink,
     updateLink,
     deleteLink,
+    restoreLink,
     createGroup,
     renameGroup,
     deleteGroup,

@@ -110,3 +110,19 @@ describe('storage.setAccent', () => {
     expect(await storage.getAccent()).toBeNull();
   });
 });
+
+describe('storage theme preference', () => {
+  it("defaults to 'system' when nothing is stored", async () => {
+    expect(await storage.getThemePreference()).toBe('system');
+  });
+
+  it('persists and retrieves a preference', async () => {
+    await storage.setThemePreference('dark');
+    expect(await storage.getThemePreference()).toBe('dark');
+  });
+
+  it("falls back to 'system' for an unknown stored value", async () => {
+    await chrome.storage.local.set({ themePreference: 'sepia' });
+    expect(await storage.getThemePreference()).toBe('system');
+  });
+});
