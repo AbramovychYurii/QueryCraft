@@ -151,7 +151,7 @@ function ReadOnlyUrl({
  * Base and the `? & =` separators muted, keys medium, values in the foreground.
  * Keys are not in the accent here: on the read-only field's bg-muted the key
  * colour, tuned against the plain background (§4.4), falls under 4.5:1 for 9 of
- * the 10 accents in light — so they keep the foreground, as Mono does.
+ * the 11 accents in light — so they keep the foreground, as Mono does.
  */
 function highlightUrl(url: string): ReactNode {
   const q = url.indexOf('?');
