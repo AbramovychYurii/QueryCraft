@@ -1,6 +1,7 @@
-import { Button } from '../Button';
-import { IconBookmark, IconCheck, IconCopy, IconReset } from '../icons';
-import styles from './ActionBar.module.css';
+import { useEffect, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import { Kbd } from '@/components/ui/kbd';
+import { ariaShortcut, shortcutLabel } from '@/lib/platform';
 
 interface ActionBarProps {
   onApply: () => void;
@@ -12,10 +13,11 @@ interface ActionBarProps {
 }
 
 /**
- * Bottom action bar:
- *   [Apply] [Reset] ...................................... [Copy] [Save]
+ * Footer action bar (docs/redesign §6.1):
+ *   [Apply ⌘↵] [Reset] ................................. [Copy] [Save]
  *
- * Apply is the primary (filled) action; the rest are outlined.
+ * It also publishes its height as --action-bar-height, so toasts can sit 8px
+ * above it (§5.3).
  */
 export function ActionBar({
   onApply,
@@ -25,34 +27,51 @@ export function ActionBar({
   applyDisabled = false,
   copied = false,
 }: ActionBarProps) {
+  const ref = useActionBarHeight();
+
   return (
-    <div className={styles.root}>
-      <Button
-        variant="primary"
-        onClick={onApply}
-        disabled={applyDisabled}
-        leadingIcon={<IconCheck />}
-      >
+    <footer ref={ref} className="flex flex-none items-center gap-2 border-t px-4 py-3">
+      <Button onClick={onApply} disabled={applyDisabled} aria-keyshortcuts={ariaShortcut('Enter')}>
         Apply
+        {/* Hidden from assistive tech: aria-keyshortcuts already names the shortcut. */}
+        <Kbd aria-hidden="true" className="bg-primary-foreground/12 text-primary-foreground">
+          {shortcutLabel('↵')}
+        </Kbd>
       </Button>
-      <Button variant="ghost" size="sm" onClick={onReset} leadingIcon={<IconReset />}>
+      <Button variant="ghost" onClick={onReset}>
         Reset
       </Button>
 
-      <div className={styles.spacer} />
+      <span aria-hidden="true" className="flex-1" />
 
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onCopy}
-        leadingIcon={copied ? <IconCheck /> : <IconCopy />}
-        aria-label={copied ? 'URL copied to clipboard' : 'Copy URL to clipboard'}
-      >
+      <Button variant="outline" onClick={onCopy}>
         {copied ? 'Copied' : 'Copy'}
       </Button>
-      <Button variant="ghost" size="sm" onClick={onSave} leadingIcon={<IconBookmark />}>
+      <Button variant="outline" onClick={onSave}>
         Save
       </Button>
-    </div>
+    </footer>
   );
+}
+
+function useActionBarHeight() {
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const root = document.documentElement;
+    const observer = new ResizeObserver(([entry]) => {
+      if (!entry) return;
+      const height = entry.borderBoxSize[0]?.blockSize ?? entry.contentRect.height;
+      root.style.setProperty('--action-bar-height', `${Math.ceil(height)}px`);
+    });
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      root.style.removeProperty('--action-bar-height');
+    };
+  }, []);
+
+  return ref;
 }

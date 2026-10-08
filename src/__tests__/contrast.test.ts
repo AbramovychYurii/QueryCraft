@@ -95,8 +95,8 @@ describe('withAlpha', () => {
 });
 
 describe('ACCENTS', () => {
-  it('has the ten swatches from the handoff', () => {
-    expect(ACCENTS).toHaveLength(10);
+  it('has the ten handoff swatches plus Fuchsia', () => {
+    expect(ACCENTS).toHaveLength(11);
   });
 
   it('uses lowercase 6-digit hex so storage comparisons are stable', () => {

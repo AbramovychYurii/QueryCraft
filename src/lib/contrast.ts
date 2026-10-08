@@ -8,7 +8,7 @@
  */
 
 const NEAR_WHITE = '#fafafa';
-const NEAR_BLACK = '#141414';
+const NEAR_BLACK = '#0a0a0a'; // docs/redesign §4.4: every swatch's label resolves to this
 
 type Rgb = [number, number, number];
 

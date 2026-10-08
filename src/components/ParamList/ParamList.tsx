@@ -88,7 +88,8 @@ export function ParamList({
 
   return (
     <>
-      <div className={styles.searchWrap}>
+      {/* Spacing above is the shell's gap (App <main>, gap-3). */}
+      <div>
         <SearchInput
           value={search}
           onChange={setSearch}

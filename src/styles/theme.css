@@ -1,0 +1,46 @@
+/*
+ * QueryCraft overrides on top of the coss tokens (docs/redesign/README.md §4.2).
+ * Imported after the coss :root / .dark blocks in global.css, so it wins.
+ */
+
+@theme {
+  /* Always desktop density: coss switches to compact sizes at `sm`, and the
+     380px popup would otherwise get the touch sizes (§4.1). */
+  --breakpoint-sm: 0rem;
+
+  --text-code: 0.8125rem; /* 13px — every monospace value/key/URL */
+  --text-code--line-height: 1.25rem; /* 20px */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+  /* Bundled via @fontsource in src/popup/main.tsx — MV3 blocks font CDNs (§3.3). */
+  --font-sans: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@theme inline {
+  --color-key-foreground: var(--key-foreground);
+  --color-segment-checked: var(--segment-checked);
+}
+
+/* AA patch layer — every value below exists because the coss default fails WCAG 2.2 AA */
+:root {
+  --ring: var(--color-neutral-500); /* coss neutral-400 = 2.6:1 on white → 4.7:1 */
+  --key-foreground: var(--foreground); /* URL keys; overridden by the accent pipeline */
+  --segment-checked: var(--background);
+}
+
+.dark {
+  /* coss neutral-500: focused vs resting border only 3.1:1 → 5.7:1 */
+  --ring: var(--color-neutral-400);
+  --muted-foreground: color-mix(in srgb, var(--color-neutral-500) 80%, var(--color-white));
+  /* coss 90% mix (#818181) = 4.2–4.4:1 on muted/popover → #8f8f8f ≥ 4.8:1 */
+  --segment-checked: --alpha(var(--color-white) / 8%);
+}
+
+@layer base {
+  /* coss requirement: portaled popups stack inside their own context. */
+  #root {
+    isolation: isolate;
+  }
+}

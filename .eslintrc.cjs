@@ -11,7 +11,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   plugins: ['jsx-a11y'],
-  settings: { react: { version: '18.3' } },
+  settings: { react: { version: 'detect' } },
   rules: {
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
