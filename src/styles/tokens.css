@@ -150,14 +150,8 @@
 /* ── Theme-agnostic scales ────────────────────────────────────────── */
 
 :root {
-  /* Typography. Inter / JetBrains Mono are used when present on the system;
-     the extension ships no webfonts (remote font CDNs are blocked by the
-     MV3 content security policy), so the fallbacks matter. */
-  --font-sans:
-    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  --font-mono:
-    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-
+  /* Typography. --font-sans / --font-mono live in theme.css's @theme now:
+     an unlayered copy here would override Tailwind's for every element. */
   --font-size-2xs: 10.5px;
   --font-size-xs: 11px;
   --font-size-sm: 11.5px;
@@ -207,11 +201,9 @@
   --min-target: 24px;
 
   /*
-   * Popup dimensions. The handoff specifies 380x640, but Chrome hard-caps
-   * extension popups at 800x600 — a 640px panel would simply be clipped.
-   * The layout is a flex column with a scrolling middle, so 600 is the
-   * faithful rendering of the design within the platform limit.
+   * Popup width. The height follows the content up to Chrome's 600px cap
+   * (src/popup/popupHeight.ts). Prefixed: Base UI sizes its popups with
+   * --popup-width / --popup-height, and an inherited :root value would win.
    */
-  --popup-width: 380px;
-  --popup-height: 600px;
+  --qc-popup-width: 380px;
 }

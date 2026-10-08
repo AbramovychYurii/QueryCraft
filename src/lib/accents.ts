@@ -17,6 +17,9 @@ export const ACCENTS: readonly Accent[] = [
   { name: 'Orange', hex: '#d9824f' },
   { name: 'Red', hex: '#d9636b' },
   { name: 'Pink', hex: '#d9709c' },
+  // Between Pink and Violet on the hue wheel, at their lightness and chroma.
+  // With Mono first, 12 swatches fill the Settings grid's two rows of six.
+  { name: 'Fuchsia', hex: '#bf6fc3' },
   { name: 'Violet', hex: '#9575e0' },
 ] as const;
 

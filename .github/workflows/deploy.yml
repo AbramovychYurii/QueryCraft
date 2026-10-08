@@ -79,6 +79,28 @@ jobs:
             *) echo "::warning::CLIENT_SECRET does not start with GOCSPX- — is this an OAuth client secret?" ;;
           esac
 
+          # A well-formed secret can still be the wrong one. Exchange the
+          # refresh token for an access token now — the call the upload makes
+          # first — so a rejected credential fails here, before a version is
+          # bumped and pushed. Only Google's error is printed, never a token.
+          trim() { printf '%s' "$1" | tr -d '[:space:]'; }
+          response="$(curl -sS -X POST https://oauth2.googleapis.com/token \
+            --data-urlencode "client_id=$(trim "$CLIENT_ID")" \
+            --data-urlencode "client_secret=$(trim "$CLIENT_SECRET")" \
+            --data-urlencode "refresh_token=$(trim "$REFRESH_TOKEN")" \
+            --data-urlencode "grant_type=refresh_token" || true)"
+          if ! printf '%s' "$response" | jq -e '.access_token' >/dev/null 2>&1; then
+            error="$(printf '%s' "$response" | jq -r '.error // empty' 2>/dev/null || true)"
+            description="$(printf '%s' "$response" | jq -r '.error_description // empty' 2>/dev/null || true)"
+            echo "::error::Google rejected the store credentials: ${error:-no response} ${description:+— $description}"
+            case "$error" in
+              invalid_client) echo "CLIENT_ID or CLIENT_SECRET is wrong — copy a current secret of this OAuth client from Google Cloud Console." ;;
+              invalid_grant) echo "REFRESH_TOKEN is expired, revoked, or was issued for another OAuth client — generate a new one." ;;
+            esac
+            exit 1
+          fi
+          echo "Store credentials accepted by Google"
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:

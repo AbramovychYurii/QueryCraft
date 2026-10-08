@@ -206,10 +206,10 @@ describe('addParam', () => {
     expect(p.type).toBe('number');
   });
 
-  it('sets an announcement', () => {
+  it('leaves the announcement alone — no toast for an added row', () => {
     useAppStore.getState().loadUrl('https://example.com/', 1);
     useAppStore.getState().addParam('q', 'search');
-    expect(useAppStore.getState().announcement).toContain('q');
+    expect(useAppStore.getState().announcement).toBe('');
   });
 
   it('does nothing when currentParsed is null', () => {
