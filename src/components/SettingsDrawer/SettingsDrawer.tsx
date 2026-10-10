@@ -151,10 +151,7 @@ export function SettingsDrawer({
                 );
               })}
             </RadioGroupPrimitive>
-            <FieldDescription>
-              Tints the primary button, switches and URL keys. Text on the accent is picked to keep
-              4.5:1.
-            </FieldDescription>
+            <FieldDescription>Tints the primary button, switches and URL keys.</FieldDescription>
           </Field>
 
           <section className="flex flex-col gap-2">
