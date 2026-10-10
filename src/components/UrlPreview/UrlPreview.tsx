@@ -93,7 +93,7 @@ export function UrlPreview({ parsed, onUrlChange }: UrlPreviewProps) {
 
   return (
     <section aria-label="URL editor" className={styles.root}>
-      <div className={styles.editorWrapper}>
+      <div className={styles.editorWrapper} dir="ltr">
         <div className={styles.highlight} aria-hidden="true">
           {renderHighlighted(localValue)}
         </div>

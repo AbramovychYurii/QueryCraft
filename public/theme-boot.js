@@ -1,7 +1,7 @@
 /*
- * Applies the saved theme and accent before first paint (docs/redesign §4.5).
+ * Applies the saved theme, accent and layout direction before first paint (docs/redesign §4.5).
  * chrome.storage is async, so the popup would flash the wrong scheme; this
- * reads the synchronous localStorage mirror that useTheme / useAccent keep.
+ * reads the synchronous localStorage mirror that useTheme / useAccent / useDirection keep.
  * Loaded as a file, not inline: the MV3 content security policy blocks inline scripts.
  */
 try {
@@ -14,6 +14,8 @@ try {
   root.classList.toggle('dark', dark);
   root.setAttribute('data-theme', scheme);
   root.style.colorScheme = scheme;
+
+  if (localStorage.getItem('qc-dir') === 'rtl') root.dir = 'rtl';
 
   var accent = JSON.parse(localStorage.getItem('qc-accent') || 'null');
   if (accent) {
