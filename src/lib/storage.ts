@@ -1,4 +1,4 @@
-import type { SavedLink, Group, AccentColor, ThemePreference } from '@/types';
+import type { SavedLink, Group, AccentColor, ThemePreference, TextDirection } from '@/types';
 
 /**
  * Adapter over chrome.storage.local.
@@ -13,6 +13,7 @@ const KEYS = {
   groups: 'qc.groups',
   accent: 'qc.accent',
   themePreference: 'themePreference',
+  direction: 'qc.direction',
 } as const;
 
 const THEME_PREFERENCES: readonly ThemePreference[] = ['system', 'light', 'dark'];
@@ -73,5 +74,14 @@ export const storage = {
 
   async setThemePreference(preference: ThemePreference): Promise<void> {
     await set(KEYS.themePreference, preference);
+  },
+
+  /** 'ltr' unless 'rtl' was stored. */
+  async getDirection(): Promise<TextDirection> {
+    return (await get<unknown>(KEYS.direction, 'ltr')) === 'rtl' ? 'rtl' : 'ltr';
+  },
+
+  async setDirection(direction: TextDirection): Promise<void> {
+    await set(KEYS.direction, direction);
   },
 };

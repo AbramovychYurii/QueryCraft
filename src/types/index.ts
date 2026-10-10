@@ -55,6 +55,9 @@ export type AccentColor = string | null;
 /** Theme setting: follow the OS, or force one scheme for QueryCraft only. */
 export type ThemePreference = 'system' | 'light' | 'dark';
 
+/** Layout direction setting: right-to-left mirrors the popup. */
+export type TextDirection = 'ltr' | 'rtl';
+
 /** Special state when the active tab's URL is a browser-internal page we can't edit. */
 export type TabLoadState =
   | { status: 'loading' }

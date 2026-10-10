@@ -1,6 +1,6 @@
 {
   "name": "querycraft",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Inspect, edit, save, and replay URL query parameters on the active tab.",
   "private": true,
   "type": "module",
