@@ -1,6 +1,6 @@
 import { useRef, type CSSProperties } from 'react';
 import { CheckIcon, MonitorIcon, MoonIcon, SunIcon, XIcon } from 'lucide-react';
-import type { AccentColor, ThemePreference } from '@/types';
+import type { AccentColor, TextDirection, ThemePreference } from '@/types';
 import type { ResolvedTheme } from '@/hooks/useTheme';
 import { ACCENTS } from '@/lib/accents';
 import { readableOn } from '@/lib/contrast';
@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 import { useReportSheetHeight } from '@/popup/popupHeight';
 import { announce } from '@/components/LiveRegion';
 import { Button } from '@/components/ui/button';
-import { Field, FieldDescription } from '@/components/ui/field';
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
 import { Frame, FramePanel } from '@/components/ui/frame';
 import { Kbd } from '@/components/ui/kbd';
 import { RadioGroupPrimitive, RadioPrimitive } from '@/components/ui/radio-group';
@@ -37,6 +37,8 @@ interface SettingsDrawerProps {
   /** The scheme in use: the OS's while the preference is 'system'. */
   resolved: ResolvedTheme;
   onPreferenceChange: (preference: ThemePreference) => void;
+  direction: TextDirection;
+  onDirectionChange: (direction: TextDirection) => void;
 }
 
 const SHEET_ID = 'settings';
@@ -63,6 +65,8 @@ export function SettingsDrawer({
   preference,
   resolved,
   onPreferenceChange,
+  direction,
+  onDirectionChange,
 }: SettingsDrawerProps) {
   const checkedSwatchRef = useRef<HTMLButtonElement>(null);
   useReportSheetHeight(open, SHEET_ID);
@@ -82,6 +86,11 @@ export function SettingsDrawer({
     if (!theme) return;
     onPreferenceChange(theme.value);
     announce(`Theme: ${theme.label}`);
+  }
+
+  function handleDirectionChange(rtl: boolean) {
+    onDirectionChange(rtl ? 'rtl' : 'ltr');
+    announce(`Right-to-left layout: ${rtl ? 'on' : 'off'}`);
   }
 
   return (
@@ -142,10 +151,7 @@ export function SettingsDrawer({
                 );
               })}
             </RadioGroupPrimitive>
-            <FieldDescription>
-              Tints the primary button, switches and URL keys. Text on the accent is picked to keep
-              4.5:1.
-            </FieldDescription>
+            <FieldDescription>Tints the primary button, switches and URL keys.</FieldDescription>
           </Field>
 
           <section className="flex flex-col gap-2">
@@ -176,6 +182,16 @@ export function SettingsDrawer({
           </section>
 
           <Separator />
+
+          <Field>
+            <FieldLabel>
+              <Switch checked={direction === 'rtl'} onCheckedChange={handleDirectionChange} />
+              Right-to-left layout
+            </FieldLabel>
+            <FieldDescription>
+              Mirrors QueryCraft for right-to-left languages like Arabic and Hebrew.
+            </FieldDescription>
+          </Field>
 
           <Field className="items-stretch">
             <p className="font-medium text-sm/4">Theme</p>

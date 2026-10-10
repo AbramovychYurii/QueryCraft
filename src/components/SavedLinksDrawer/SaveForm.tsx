@@ -123,7 +123,7 @@ function ReadOnlyUrl({
           data-overflowing={overflowing || undefined}
           className="max-h-20 overflow-y-auto data-overflowing:mask-b-from-[calc(100%-1.5rem)]"
         >
-          <div className="relative">
+          <div className="relative" dir="ltr">
             <div
               aria-hidden="true"
               className="whitespace-pre-wrap break-all px-[11px] font-mono text-code text-muted-foreground"

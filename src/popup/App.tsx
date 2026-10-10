@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { DirectionProvider } from '@base-ui/react/direction-provider';
 import type { SavedLink } from '@/types';
 import { useAppStore, selectCurrentUrl, selectNavUrl } from '@/store/useAppStore';
 import { useActiveTabUrl } from '@/hooks/useActiveTabUrl';
 import { useClipboard } from '@/hooks/useClipboard';
 import { useTheme } from '@/hooks/useTheme';
 import { useAccent } from '@/hooks/useAccent';
+import { useDirection } from '@/hooks/useDirection';
 import { useSavedLinks } from '@/hooks/useSavedLinks';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { tabs } from '@/lib/tabs';
@@ -33,6 +35,7 @@ export function App() {
   useActiveTabUrl();
   const { preference, resolved, setPreference } = useTheme();
   const { accent, setAccent } = useAccent(resolved);
+  const { direction, setDirection } = useDirection();
 
   // Zustand store — individual selectors keep re-renders narrow.
   const tabState = useAppStore((s) => s.tabState);
@@ -235,98 +238,103 @@ export function App() {
 
   return (
     <PanelMinHeightContext.Provider value={setPanelMinHeight}>
-      <ToastProvider
-        position="bottom-center"
-        timeout={3000}
-        viewportClassName={TOAST_VIEWPORT_CLASS}
-      >
-        {/*
-         * Natural height, capped at Chrome's 600px popup limit; main.tsx sizes
-         * the popup from it (docs/redesign §5.1). An open panel raises the
-         * minimum so it is not clipped over a short view. `overflow-clip`, not
-         * hidden: the closed panel waits off to the right, and a clip is not a
-         * scroll container, so nothing can scroll the holder sideways to it.
-         */}
-        <div
-          className="relative flex max-h-[600px] min-w-0 flex-col overflow-clip bg-background text-foreground"
-          style={panelMinHeight === null ? undefined : { minHeight: panelMinHeight }}
+      {/* Base UI reads the direction from here for arrow keys and popup sides. */}
+      <DirectionProvider direction={direction}>
+        <ToastProvider
+          position="bottom-center"
+          timeout={3000}
+          viewportClassName={TOAST_VIEWPORT_CLASS}
         >
-          <Header onOpenSaved={handleOpenDrawer} onOpenSettings={handleOpenSettings} />
+          {/*
+           * Natural height, capped at Chrome's 600px popup limit; main.tsx sizes
+           * the popup from it (docs/redesign §5.1). An open panel raises the
+           * minimum so it is not clipped over a short view. `overflow-clip`, not
+           * hidden: the closed panel waits off to the right, and a clip is not a
+           * scroll container, so nothing can scroll the holder sideways to it.
+           */}
+          <div
+            className="relative flex max-h-[600px] min-w-0 flex-col overflow-clip bg-background text-foreground"
+            style={panelMinHeight === null ? undefined : { minHeight: panelMinHeight }}
+          >
+            <Header onOpenSaved={handleOpenDrawer} onOpenSettings={handleOpenSettings} />
 
-          {tabState.status === 'loading' && (
-            <main className="flex min-h-0 flex-1 flex-col">
-              <EmptyState title="Loading…" message="Reading the active tab's URL." />
-            </main>
-          )}
+            {tabState.status === 'loading' && (
+              <main className="flex min-h-0 flex-1 flex-col">
+                <EmptyState title="Loading…" message="Reading the active tab's URL." />
+              </main>
+            )}
 
-          {tabState.status === 'unsupported' && (
-            <main className="flex min-h-0 flex-1 flex-col">
-              <EmptyState
-                title="This page can't be edited"
-                message="QueryCraft works on http, https, and file URLs. Browser-internal pages are not supported."
-              />
-            </main>
-          )}
-
-          {tabState.status === 'error' && (
-            <main className="flex min-h-0 flex-1 flex-col">
-              <EmptyState title="Something went wrong" message={tabState.message} />
-            </main>
-          )}
-
-          {tabState.status === 'ready' && currentParsed && (
-            <>
-              {/* Interim: main scrolls as a whole until Phase 2 moves scrolling into the list (§5.2). */}
-              <main className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overflow-x-hidden px-4 py-3">
-                <UrlPreview parsed={currentParsed} onUrlChange={setCurrentUrl} />
-                <ParamList
-                  params={currentParsed.params}
-                  onKeyChange={updateKey}
-                  onValueChange={updateValue}
-                  onToggleBoolean={toggleBool}
-                  onRemove={removeParam}
-                  onAdd={handleAddParam}
+            {tabState.status === 'unsupported' && (
+              <main className="flex min-h-0 flex-1 flex-col">
+                <EmptyState
+                  title="This page can't be edited"
+                  message="QueryCraft works on http, https, and file URLs. Browser-internal pages are not supported."
                 />
               </main>
-              <ActionBar
-                onApply={() => void handleApply()}
-                onReset={handleReset}
-                onCopy={() => void handleCopy()}
-                onSave={handleOpenSaveDrawer}
-                copied={copied}
-                applyDisabled={!navUrl}
-              />
-            </>
-          )}
+            )}
 
-          <SavedLinksDrawer
-            open={drawerOpen}
-            initialMode={drawerMode}
-            onClose={handleCloseDrawer}
-            currentUrl={currentUrl}
-            links={links}
-            groups={groups}
-            onSave={handleSaveLink}
-            onUpdateLink={handleUpdateLink}
-            onDeleteLink={handleDeleteLink}
-            onCopyLink={handleCopySavedLink}
-            onCreateGroup={createGroup}
-            onLoadLink={handleLoadSavedLink}
-          />
+            {tabState.status === 'error' && (
+              <main className="flex min-h-0 flex-1 flex-col">
+                <EmptyState title="Something went wrong" message={tabState.message} />
+              </main>
+            )}
 
-          <SettingsDrawer
-            open={settingsOpen}
-            onClose={handleCloseSettings}
-            accent={accent}
-            onAccentChange={setAccent}
-            preference={preference}
-            resolved={resolved}
-            onPreferenceChange={setPreference}
-          />
-        </div>
+            {tabState.status === 'ready' && currentParsed && (
+              <>
+                {/* Interim: main scrolls as a whole until Phase 2 moves scrolling into the list (§5.2). */}
+                <main className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overflow-x-hidden px-4 py-3">
+                  <UrlPreview parsed={currentParsed} onUrlChange={setCurrentUrl} />
+                  <ParamList
+                    params={currentParsed.params}
+                    onKeyChange={updateKey}
+                    onValueChange={updateValue}
+                    onToggleBoolean={toggleBool}
+                    onRemove={removeParam}
+                    onAdd={handleAddParam}
+                  />
+                </main>
+                <ActionBar
+                  onApply={() => void handleApply()}
+                  onReset={handleReset}
+                  onCopy={() => void handleCopy()}
+                  onSave={handleOpenSaveDrawer}
+                  copied={copied}
+                  applyDisabled={!navUrl}
+                />
+              </>
+            )}
 
-        <LiveRegion />
-      </ToastProvider>
+            <SavedLinksDrawer
+              open={drawerOpen}
+              initialMode={drawerMode}
+              onClose={handleCloseDrawer}
+              currentUrl={currentUrl}
+              links={links}
+              groups={groups}
+              onSave={handleSaveLink}
+              onUpdateLink={handleUpdateLink}
+              onDeleteLink={handleDeleteLink}
+              onCopyLink={handleCopySavedLink}
+              onCreateGroup={createGroup}
+              onLoadLink={handleLoadSavedLink}
+            />
+
+            <SettingsDrawer
+              open={settingsOpen}
+              onClose={handleCloseSettings}
+              accent={accent}
+              onAccentChange={setAccent}
+              preference={preference}
+              resolved={resolved}
+              onPreferenceChange={setPreference}
+              direction={direction}
+              onDirectionChange={setDirection}
+            />
+          </div>
+
+          <LiveRegion />
+        </ToastProvider>
+      </DirectionProvider>
     </PanelMinHeightContext.Provider>
   );
 }
